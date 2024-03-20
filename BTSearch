@@ -1,0 +1,78 @@
+public class BTSearch extends Tree{
+
+    //Construtor
+    public BTSearch(Node root) {
+        super(root);
+    }
+
+    //Função para adicionar nó BT ou BTS
+    @Override
+    public Node addBTS(int key, Node atual) {
+        Node newNode = new Node(key);
+
+        if (atual == null) {
+            root = newNode;
+            return newNode;
+        }
+
+        Node previous = null;
+        Node current = atual;
+
+        while (current != null) {
+            previous = current;
+
+            if (key < current.key) {
+                current = current.left;
+            } else if (key > current.key) {
+                current = current.right;
+            } else {
+                return current;
+            }
+        }
+
+        if (key < previous.key) {
+            previous.left = newNode;
+        } else if (key > previous.key) {
+            previous.right = newNode;
+        }
+
+        return newNode;
+    }
+
+    @Override
+    public void addBT(int key, Node atual) {}
+
+    //Função de adicionar nó AVL - não utilizada
+    @Override
+    public Node addAVL(int key, int height, Node atual) {
+        return null;
+    }
+
+    //Função de cálculo de altura - não utilizada
+    @Override
+    public int height(Node node) {
+        return 0;
+    }
+
+    //Função para ver se a árvore precisa de ser equilibrada - não utilizada
+    @Override
+    public Node checkBalance(Node node) {
+        return null;
+    }
+
+
+    //Função para encontrar nó
+    @Override
+    public Node find(Node atual, int key) {
+        while (atual != null) {
+            if (key == atual.key) {
+                return atual;
+            } else if (key < atual.key) {
+                atual = atual.left;
+            } else {
+                atual = atual.right;
+            }
+        }
+        return null;
+    }
+}
