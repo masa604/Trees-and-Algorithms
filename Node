@@ -1,0 +1,34 @@
+public class Node {
+    protected int key;
+    protected Node left;
+    protected Node right;
+    protected int height;
+    protected boolean color;
+
+    //Construtor para binárias e binárias de pesquisa:
+    public Node(int key) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+        this.height = -1;
+        this.color = false;
+    }
+
+    //Construtor para AVL:
+    public Node(int key, int height) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+        this.height = height;
+        this.color = false;
+    }
+
+    //Construtor para VP:
+    public Node(int key, int height, boolean color) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+        this.height = height;
+        this.color = color;
+    }
+}
