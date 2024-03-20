@@ -1,0 +1,204 @@
+import static java.lang.Math.max;
+
+public class VPTree extends Tree{
+    private int count;
+
+    //Contrutor:
+    public VPTree(Node root) {
+        super(root);
+        this.count = 0;
+    }
+
+
+    //Função de adicionar nós VP
+    public Node addVP(int key, int height, boolean color, Node atual) {
+        if (atual == null) {
+            return new Node(key, height, true);
+        }
+        if (key < atual.key){
+            atual.left = addVP(key, height, true, atual.left);
+        } else if (key > atual.key) {
+            atual.right = addVP(key, height, true, atual.right);
+        }else {
+            return atual;
+        }
+        //a altura é usada nas vermelhas e pretas?
+        atual.height = 1 + max(height(atual.left), height(atual.right));
+        return fixColor(atual);
+    }
+
+
+    public int height(Node node) {
+        if (node == null) {
+            return 0;
+        } else {
+            int LChildHeight = height(node.left);
+            int RChildHeight = height(node.right);
+            node.height = max(LChildHeight, RChildHeight)+1;
+            return node.height;
+        }
+    }
+
+    public Node checkBalance(Node node) {
+        return node;
+    }
+
+    public Node fixColor(Node node) {
+        Node parent = findParent(root, node);
+        Node grandpa = findParent(root, parent);
+        Node uncle = findUncle(node, grandpa);
+
+        // Casos de Recoloring:
+        // parent e grandparent -> red
+        // parent e uncle -> red -> recolor
+        // uncle -> black parent -> red -> rotations e/ou recolor
+
+        if (grandpa != null) {
+            // Se o nó atual e seu pai são vermelhos, e o tio também é vermelho
+            if (uncle != null && uncle.color && parent.color) {
+                parent.color = false;
+                uncle.color = false;
+                grandpa.color = true;
+                fixColor(grandpa); // Verifica se a recoloração criou outra violação na árvore
+            }
+            // Se o nó atual é vermelho e o pai é vermelho, mas o tio é preto
+            else if (uncle == null || !uncle.color) {
+                // Caso Esquerda-Esquerda
+                if (parent == grandpa.left && node == parent.left) {
+                    grandpa = rotateR(grandpa);
+                    grandpa.color = false;
+                    grandpa.right.color = true;
+                }
+                // Caso Esquerda-Direita
+                else if (parent == grandpa.left && node == parent.right) {
+                    parent = rotateL(parent);
+                    grandpa.left = parent;
+                    grandpa = rotateR(grandpa);
+                    grandpa.color = false;
+                    grandpa.right.color = true;
+                }
+                // Caso Direita-Direita
+                else if (parent == grandpa.right && node == parent.right) {
+                    grandpa = rotateL(grandpa);
+                    grandpa.color = false;
+                    grandpa.left.color = true;
+                }
+                // Caso Direita-Esquerda
+                else if (parent == grandpa.right && node == parent.left) {
+                    parent = rotateR(parent);
+                    grandpa.right = parent;
+                    grandpa = rotateL(grandpa);
+                    grandpa.color = false;
+                    grandpa.left.color = true;
+                }
+            }
+        }
+        return grandpa;
+    }
+
+
+    //rotações direita
+    public Node rotateR(Node node) {
+        if (node == null || node.left == null) {
+            return node;
+        }
+
+        Node LChild = node.left;
+        Node x = LChild.right;
+        LChild.right = node;
+        node.left = x;
+
+        //atualização das alturas
+        node.height = 1 + max(height(node.left), height(node.right));
+        LChild.height = 1 + max(height(LChild.left), height(LChild.right));
+
+        count++;
+        return LChild;
+    }
+
+    //rotações esquerda
+    public Node rotateL(Node node){
+        if (node == null || node.right == null) {
+            return node;
+        }
+        Node RChild = node.right;
+        Node x = RChild.left;
+
+        RChild.left = node;
+        node.right = x;
+
+        //atualização das alturas
+        node.height = 1 + max(height(node.left), height(node.right));
+        RChild.height = 1 + max(height(RChild.left), height(RChild.right));
+
+        count++;
+        return RChild;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+
+    //Encontrar PAI
+    private Node findParent(Node root, Node node) {
+        //o node é a raiz
+        if (root == null || node == null || root == node) {
+            return null;
+        }
+        //se for filho da raiz
+        if (root.left == node || root.right == node) {
+            return root;
+        }
+        //procura o pai no lado esquerdo e direito da árvore
+        Node parent = findParent(root.left, node);
+        if (parent == null) {
+            parent = findParent(root.right, node);
+        }
+        return parent;
+    }
+
+
+    //Encontrar TIO
+    public Node findUncle(Node current, Node grandpa) {
+        //não há tio
+        if (grandpa == null) {
+            return null;
+        }
+        Node parent = findParent(grandpa, current);
+        if (parent == null) {
+            return null;
+        }
+        return (grandpa.left == parent) ? grandpa.right : grandpa.left;
+    }
+
+
+    //Função de encontrar nó
+    @Override
+    public Node find(Node atual, int key) {
+        while (atual != null) {
+            if (key == atual.key) {
+                return atual;
+            } else if (key < atual.key) {
+                atual = atual.left;
+            } else {
+                atual = atual.right;
+            }
+        }
+        return null;
+    }
+
+
+
+    //Funções não usadas por esta classe:
+    @Override
+    public void addBT(int key, Node atual) {}
+    @Override
+    public Node addBTS(int key, Node atual) {
+        return null;
+    }
+    @Override
+    public Node addAVL(int key, int height, Node atual) {
+        return null;
+    }
+}
