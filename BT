@@ -1,0 +1,73 @@
+import java.util.Random;
+public class BT extends Tree{
+
+    //Construtor
+    public BT(Node root) {
+        super(root);
+    }
+
+    //Função para adicionar nós à árvore
+    Random rd = new Random();
+    @Override
+    public void addBT(int key, Node atual) {
+        if (atual == null){
+            atual = new Node(key);
+        } else {
+            boolean addRight = rd.nextBoolean();
+
+            if (addRight && atual.right == null) {
+                atual.right = new Node(key);
+            } else if (!addRight && atual.left == null) {
+                atual.left = new Node(key);
+            } else {
+                // Se não for possível adicionar à direita ou à esquerda, faz chamada recursiva para continuar a busca
+                if (addRight) {
+                    addBT(key, atual.right);
+                } else {
+                    addBT(key, atual.left);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Node addBTS(int key, Node atual) {
+        return null;
+    }
+
+    @Override
+    public Node addAVL(int key, int height, Node atual) {
+        return null;
+    }
+
+    //Função de cálculo de altura
+    @Override
+    public int height(Node node) {
+        return 0;
+    }
+
+    //Função para ver se a árvore precisa de ser equilibrada
+    @Override
+    public Node checkBalance(Node node) {
+        return null;
+    }
+
+    //Função para encontrar nó
+    @Override
+    public Node find(Node node, int key) {
+        if (node == null) {
+            return null;
+        }
+
+        if (key < node.key) {
+            return find(node.left, key);
+        } else if (key > node.key) {
+            return find(node.right, key);
+        } else {
+            return node;
+        }
+    }
+
+
+
+}
