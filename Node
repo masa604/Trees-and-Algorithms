@@ -4,31 +4,19 @@ public class Node {
     protected Node right;
     protected int height;
     protected boolean color;
+//criação do nó pai, dadas as dificuldades encontradas
+    protected Node parent;
 
-    //Construtor para binárias e binárias de pesquisa:
+
+//Construtor BT, BTS, AVL e VP:
+//true - vermelho
+//false - preto
     public Node(int key) {
         this.key = key;
         this.left = null;
         this.right = null;
-        this.height = -1;
-        this.color = false;
-    }
-
-    //Construtor para AVL:
-    public Node(int key, int height) {
-        this.key = key;
-        this.left = null;
-        this.right = null;
-        this.height = height;
-        this.color = false;
-    }
-
-    //Construtor para VP:
-    public Node(int key, int height, boolean color) {
-        this.key = key;
-        this.left = null;
-        this.right = null;
-        this.height = height;
-        this.color = color;
+        this.height = 1;
+        this.color = true;
+        this.parent = null;
     }
 }
