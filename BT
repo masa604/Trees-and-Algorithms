@@ -1,73 +1,71 @@
 import java.util.Random;
-public class BT extends Tree{
-
+public class BT{
+    protected Node root;
     //Construtor
-    public BT(Node root) {
-        super(root);
+    public BT() {
+        this.root = null;
     }
 
-    //Função para adicionar nós à árvore
+    //ADICIONAR NÓS
     Random rd = new Random();
-    @Override
-    public void addBT(int key, Node atual) {
+    
+    public void add(int key, Node atual) {
+        //se a raiz não existir, é criada
         if (atual == null){
-            atual = new Node(key);
+            this.root = new Node(key);
+
+        //caso contrário, adiciona com um boolean que define o lado de inserção
         } else {
             boolean addRight = rd.nextBoolean();
 
             if (addRight && atual.right == null) {
                 atual.right = new Node(key);
+                return atual.right;
             } else if (!addRight && atual.left == null) {
                 atual.left = new Node(key);
+                return atual.left;
             } else {
-                // Se não for possível adicionar à direita ou à esquerda, faz chamada recursiva para continuar a busca
+                // Se não for possível adicionar à direita ou à esquerda, chama recursivamente
                 if (addRight) {
-                    addBT(key, atual.right);
+                    return add(key, atual.right);
                 } else {
-                    addBT(key, atual.left);
+                    return add(key, atual.left);
                 }
             }
         }
     }
 
-    @Override
-    public Node addBTS(int key, Node atual) {
-        return null;
+    //TRAVESSIA INORDER
+    //Imprime a árvore com o método da travessia in Order
+    void InOrder(Node root) {
+         if(root == null) {
+             System.out.println("\nNo nodes in the tree");
+             return;
+         }
+         //imprime o LChild, o nó e depois o RChild
+         if(root.left != null)
+             InOrder(root.left);
+         System.out.print(root.key + " ");
+         if(root.right != null)
+             InOrder(root.right);
     }
 
-    @Override
-    public Node addAVL(int key, int height, Node atual) {
-        return null;
-    }
 
-    //Função de cálculo de altura
-    @Override
-    public int height(Node node) {
-        return 0;
-    }
 
-    //Função para ver se a árvore precisa de ser equilibrada
-    @Override
-    public Node checkBalance(Node node) {
-        return null;
-    }
-
-    //Função para encontrar nó
-    @Override
+    //FIND
     public Node find(Node node, int key) {
         if (node == null) {
             return null;
         }
-
-        if (key < node.key) {
-            return find(node.left, key);
-        } else if (key > node.key) {
-            return find(node.right, key);
-        } else {
+        if(node.key == key) {
             return node;
         }
+        //começa por procurar no lado esquerdo
+        Node foundNode = find(node.left, key);
+        //caso não esteja no lado esquerdo, procura-se no lado direito
+        if(foundNode == null) {
+            foundNode = find(node.right, key);
+        }
+        return foundNode;
     }
-
-
-
 }
