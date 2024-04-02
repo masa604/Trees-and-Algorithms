@@ -9,11 +9,13 @@ public class BTS{
     public Node add(int key, Node node) {
         Node newNode = new Node(key);
 
+        //se não existir raiz, cria-se
         if (node == null) {
             root = newNode;
             return newNode;
         }
 
+        //atual -> raiz e previous->null
         Node previous = null;
         Node current = node;
 
@@ -39,11 +41,24 @@ public class BTS{
 
     
     //TRAVESSIA INORDER
-
+    //Imprime a árvore com o método da travessia in Order
+    void InOrder(Node root) {
+         if(root == null) {
+             System.out.println("\nNo nodes in the tree");
+             return;
+         }
+         //imprime o LChild, o nó e depois o RChild
+         if(root.left != null)
+             InOrder(root.left);
+         System.out.print(root.key + " ");
+         if(root.right != null)
+             InOrder(root.right);
+    }
     
 
 
     //FIND
+    //procura de acordo com as regras da árvore binária de pesquisa
     public Node find(Node node, int key) {
         while (node != null) {
             if (key == node.key) {
