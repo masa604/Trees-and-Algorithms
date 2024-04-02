@@ -1,0 +1,59 @@
+public class BTS{
+    protected Node root;
+    //Construtor
+    public BTS() {
+        this.root = null;
+    }
+
+    //ADICIONAR NÓS
+    public Node add(int key, Node node) {
+        Node newNode = new Node(key);
+
+        if (node == null) {
+            root = newNode;
+            return newNode;
+        }
+
+        Node previous = null;
+        Node current = node;
+
+        while (current != null) {
+            previous = current;
+
+            if (key < current.key) {
+                current = current.left;
+            } else if (key > current.key) {
+                current = current.right;
+            } else {
+                return current;
+            }
+        }
+
+        if (key < previous.key) {
+            previous.left = newNode;
+        } else if (key > previous.key) {
+            previous.right = newNode;
+        }
+        return newNode;
+    }
+
+    
+    //TRAVESSIA INORDER
+
+    
+
+
+    //FIND
+    public Node find(Node node, int key) {
+        while (node != null) {
+            if (key == node.key) {
+                return node;
+            } else if (key < node.key) {
+                node = node.left;
+            } else {
+                node = node.right;
+            }
+        }
+        return null;
+    }
+}
