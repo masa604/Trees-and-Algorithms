@@ -97,21 +97,30 @@ public class AVL{
     }
 
     //TRAVESSIA INORDER
-    
+    //Imprime a árvore com o método da travessia in Order
+    void InOrder(Node root) {
+         if(root == null) {
+             System.out.println("\nNo nodes in the tree");
+             return;
+         }
+         //imprime o LChild, o nó e depois o RChild
+         if(root.left != null)
+             InOrder(root.left);
+         System.out.print(root.key + " ");
+         if(root.right != null)
+             InOrder(root.right);
+    }
 
 
     //FIND
-    public Node find(Node atual, int key) {
-        while (atual != null) {
-            if (key == atual.key) {
-                return atual;
-            } else if (key < atual.key) {
-                atual = atual.left;
-            } else {
-                atual = atual.right;
-            }
+    public Node find(Node node, int key) {
+        if (node == null || key == node.key) {
+            return node;
         }
-        return null;
-    }g
-
+        if (key < node.key) {
+            return find(node.left, key);
+        } else {
+            return find(node.right, key);
+        }
+    }
 }
