@@ -1,0 +1,117 @@
+public class AVL{
+    public int count = 0;
+    protected Noded root;
+
+    //Construtor:
+    public AVL() {
+        this.root = null;
+    }
+
+    //ADICIONAR NÓS
+    public Node add(int key, int height, Node node) {
+        if (node == null) {
+            return new Node(key);
+        }
+        if (key < node.key){
+            node.left = add(key, node.left);
+        } else if (key > node.key) {
+            node.right = add(key, node.right);
+        }else {
+            return node;
+        }
+
+        //atualiza a altura do nó atual
+        node.height = 1 + Math.max(height(node.left), height(node.right));
+        
+        //verifica o fator de equilíbrio
+        int balance = getBalance(node);
+
+        if (balance > 1 && key < node.left.key)
+            return rotateR(node);
+        if (balance < -1 && key > node.right.key)
+            return rotateL(node);
+        if(balance > 1 && key > node.left.key) {
+            node.left = rotateL(node.left);
+            return rotateR(node);
+        }
+        if(balance < -1 && key < node.right.key) {
+            node.right = rotateR(node.right);
+            return rotateL(node);
+        }
+        return node;
+    }
+
+    //ALTURA ÁRVORE
+    public int height(Node node) {
+        if (node == null) {
+            return 0;
+        return node.height;
+    }
+
+    //ATUALIZA ALTURA DA ÁRVORE
+    public void updateHeight(Node n) {
+         int LHeight = height(n.left);
+         int RHeight = height(n.right);
+         n.height = Math.max(LHeight, RHeight) + 1;
+    }
+
+
+    //ROTAÇÃO DIREITA
+    public Node rotateR(Node parent) {
+        count++;
+        Node child = parent.left;
+        Node grandChild = child.right;
+        child.right = parent;
+        parent.left = grandChild;
+        
+        //atualização das alturas
+        parent.height = 1 + Math.max(height(parent.left), height(parent.right));
+        LChild.height = 1 + Math.max(height(child.left), height(child.right));
+        return child;
+    }
+
+    //ROTAÇÃO ESQUERDA
+    public Node rotateL(Node parent){
+        count++;
+        Node child = parent.right;
+        Node grandChild = child.left;
+        child.left = parent;
+        parent.right = grandChild;
+        
+        //atualização das alturas
+        parent.height = 1 + Math.max(height(parent.left), height(parent.right));
+        LChild.height = 1 + Math.max(height(child.left), height(child.right));
+        return child;
+    }
+
+    //CONTAGEM DE ROTAÇÕES
+    public int getCount() {
+        return count;
+    }
+
+    //FATOR DE EQUILÍBRIO
+    public int getBalance (Node n) {
+        if (n == null)
+            return 0;
+        return height(n.left) - height(n.right);
+    }
+
+    //TRAVESSIA INORDER
+    
+
+
+    //FIND
+    public Node find(Node atual, int key) {
+        while (atual != null) {
+            if (key == atual.key) {
+                return atual;
+            } else if (key < atual.key) {
+                atual = atual.left;
+            } else {
+                atual = atual.right;
+            }
+        }
+        return null;
+    }g
+
+}
