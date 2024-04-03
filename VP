@@ -1,17 +1,21 @@
-import static java.lang.Math.max;
-
-public class VPTree extends Tree{
-    private int count;
+public class VP{
+    protected int count = 0
+    protected Node root;
 
     //Contrutor:
-    public VPTree(Node root) {
-        super(root);
-        this.count = 0;
+    public VP() {
+        this.root = null;
     }
 
+    //FLAGS para ver equilíbrio da árvore
+    boolean ll = false;
+    boolean rr = false;
+    boolean lr = false;
+    boolean rl = false;
 
-    //Função de adicionar nós VP
-    public Node addVP(int key, int height, boolean color, Node atual) {
+
+    //ADICIONAR NÓS
+    public Node add(int key, int height, boolean color, Node atual) {
         if (atual == null) {
             return new Node(key, height, true);
         }
