@@ -1,328 +1,201 @@
-//Questões:
-//- é suposto haver nós repetidos?
-
-//O que falta fazer:
-//- corrigir as rotações da AVL
-//- corrigir a AddVP
-//- confirmar a findParent
-//- confirmar a findUncle
-//- meter os arrays da ficha
-//- otimizar o código
-//- função de impressão específicada para a VP Tree (*->vermelho, .->preto)
-//- testar as funções find da AVL e da VP
-//- melhorar o menu
-
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
+        //variáveis para os conjuntos
+        int tamanho = 1000;
+        double minRepetidos = 0.10;
+        double maxRepetidos = 0.20;
+        double repetidosConjD = 0.90;
 
-        Scanner scanner = new Scanner(System.in);
+        //CONJUNTO A
+        ArrayList<Integer> conjA = gerar(tamanho, minRepetidos, maxRepetidos);
+        Collections.sort(conjA);
 
-        System.out.println("Bem-vindo ao projeto de árvores!");
-        System.out.println("1. Visualização de BT");
-        System.out.println("2. Visualização de BTS");
-        System.out.println("3. Visualização de AVL");
-        System.out.println("4. Visualização de VP");
+        //CONJUNTO B
+        ArrayList<Integer> conjB = gerar(tamanho, minRepetidos, maxRepetidos);
+        Collections.sort(conjB, Collections.reverseOrder());
+        
+        //CONJUNTO C
+        ArrayList<Integer> conjC = gerar(tamanho, minRepetidos, maxRepetidos);
 
-        System.out.print("Escolha uma opção: ");
-        int opcao = scanner.nextInt();
+        //CONJUNTO D
+        ArrayList<Integer> conjD = gera(tamanho, (int) (repetidosConjD * tamanho));
 
-        long inicio, fim;
-        double duracao;
-        char resposta;
+        /*
+        //-----------------------------TESTE BT
 
+        //Adicionar nós na árvore
+        BT btTree = new BT();
+        double inicio = System.nanoTime();
 
-        switch (opcao) {
-            //-------------------------------------ADICIONAR & ENCONTRAR ELEMENTOS!!
-
-            //Árvore Binária - impressão:
-            case 1:
-                Node rootBT = new Node(100);
-                Tree bt = new BT(rootBT);
-
-                int[] vectorValuesBT = {50,150,130,20};
-
-                inicio = System.nanoTime();
-
-                for (int i = 0; i < vectorValuesBT.length; i++) {
-                    bt.addBT(vectorValuesBT[i], rootBT);
-                }
-
-                fim = System.nanoTime();
-                duracao = (fim - inicio) / 1e9;
-
-                System.out.println("Árvore Binária Impressa:");
-                System.out.print(traversePreOrder(rootBT));
-                System.out.println("\nTempo de inserção na árvore binária: " + duracao + " segundos");
-
-
-                System.out.print("Deseja encontrar um elemento na árvore? (S/N): ");
-                resposta = scanner.next().charAt(0);
-
-                do {
-                    if (resposta == 'S' || resposta == 's') {
-                        System.out.print("Insira o valor a encontrar: ");
-                        int keyBT = scanner.nextInt();
-
-                        Node foundNodeBT = bt.find(bt.root, keyBT);
-
-                        if (foundNodeBT != null) {
-                            System.out.println("Nó encontrado na Árvore Binária: " + foundNodeBT.key);
-                            System.out.println(foundNodeBT);
-                        } else {
-                            System.out.println("Nó não encontrado na Árvore Binária.");
-                            System.out.println(foundNodeBT);
-                        }
-
-                    } else if (resposta == 'N' || resposta == 'n') {
-                        break;
-                    }
-                    System.out.print("Deseja continuar a procura? (S/N): ");
-                    resposta = scanner.next().charAt(0);
-                } while(resposta == 'S' || resposta == 's');
-
-
-            //Árvore Binária de Pesquisa - impressão:
-            case 2:
-                Node rootBTS = new Node(50);
-                Tree btSearch = new BTSearch(rootBTS);
-
-                int[] vectorValuesBTS = {30,70,20,35,80,60};
-
-                inicio = System.nanoTime();
-
-                for (int i = 0; i < vectorValuesBTS.length; i++) {
-                    btSearch.addBTS(vectorValuesBTS[i], rootBTS);
-                }
-
-                fim = System.nanoTime();
-                duracao = (fim - inicio) / 1e9;
-
-                System.out.println("Árvore Binária de Pesquisa Impressa:");
-                System.out.print(traversePreOrder(rootBTS));
-                System.out.println("\nTempo de inserção na árvore binária de pesquisa: " + duracao + " segundos");
-
-                System.out.print("Deseja encontrar um elemento na árvore? (S/N): ");
-                resposta = scanner.next().charAt(0);
-                if (resposta == 'S' || resposta == 's') {
-                    System.out.print("Insira o valor a encontrar: ");
-                    int keyBTS = scanner.nextInt();
-
-                    Node foundNodeBTSearch = btSearch.find(rootBTS, keyBTS);
-
-                    if (foundNodeBTSearch != null) {
-                        System.out.println("Nó encontrado na Árvore Binária de Pesquisa: " + foundNodeBTSearch.key);
-                    } else {
-                        System.out.println("Nó não encontrado na Árvore Binária de Pesquisa.");
-                    }
-                    System.out.println();
-                    break;
-                } else if (resposta == 'N' || resposta == 'n') {
-                    break;
-                }
-
-
-                System.out.println();
-                break;
-
-            //Árvore AVL - impressão:
-            case 3:
-                //não está a fazer rotação dupla!!
-                Node rootAVL = new Node(30);
-                AVLTree avlTree = new AVLTree(rootAVL);
-
-                int[] vectorValuesAVL = {25, 54, 50, 55, 52};
-
-                inicio = System.nanoTime();
-
-                for (int value : vectorValuesAVL) {
-                    avlTree.addAVL(value, 1, rootAVL);
-                }
-
-                fim = System.nanoTime();
-                duracao = (fim - inicio) / 1e9;
-
-                System.out.println("Árvore AVL Impressa:");
-                System.out.print(traversePreOrder(rootAVL));
-
-                int rotationsAVL = avlTree.getCount();
-                System.out.println("\nNúmero de rotações na árvore AVL: " + rotationsAVL);
-                System.out.println("Tempo de inserção na árvore avl: " + duracao + " segundos");
-
-
-                System.out.println();
-                break;
-
-            //Árvore VP - impressão:
-            case 4:
-                //false - preto
-                //true - vermelho
-
-                Node rootVP = new Node(30);
-                VPTree vpTree = new VPTree(rootVP);
-
-                int[] vectorValuesVP = {50, 65, 20, 60, 55};
-
-                inicio = System.nanoTime();
-
-                for (int value : vectorValuesVP) {
-                    vpTree.addVP(value, 1, false, rootVP);
-                }
-
-                fim = System.nanoTime();
-                duracao = (fim - inicio) / 1e9;
-
-                System.out.println("Árvore Vermelha e Preta Impressa:");
-                System.out.print(traversePreOrder(rootVP));
-
-                int rotationsVP = vpTree.getCount();
-                System.out.println("Número de rotações na árvore Vermelha e Preta: " + rotationsVP);
-                System.out.println("Tempo de inserção na árvore avl: " + duracao + " segundos");
-
-                System.out.println();
-                break;
-
-
-            default:
-                System.out.println("Opção inválida.");
-                break;
+        for (int value : conjA) {
+            btTree.add(value, btTree.root);
         }
+        double fim = System.nanoTime();
+        double duration = fim - inicio;
 
 
+        //Imprimir árvore e tempo de inserção
+        System.out.println("Árvore BT Impressa:");
+        btTree.InOrder(btTree.root);
+        System.out.println();
+        System.out.println(duration/1e9);
 
-    }
 
-
-    //IMPRESSÃO S/IDENTIFICAÇÃO DE CORES
-    public static String traversePreOrder(Node root) {
-
-        if (root == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(root.key);
-
-        String pointerRight = "└─R─";
-        String pointerLeft = (root.right != null) ? "├─L─" : "└─L─";
-
-        traverseNodes(sb, "", pointerLeft, root.left, root.right != null);
-        traverseNodes(sb, "", pointerRight, root.right, false);
-
-        return sb.toString();
-    }
-
-    public static void traverseNodes(StringBuilder sb, String padding, String pointer, Node node, boolean hasRightSibling) {
-        if (node != null) {
-            sb.append("\n");
-            sb.append(padding);
-            sb.append(pointer);
-            sb.append(node.key);
-
-            StringBuilder paddingBuilder = new StringBuilder(padding);
-            if (hasRightSibling) {
-                paddingBuilder.append("│  ");
+        //Encontrar elementos na árvore
+        for (int i = 0; i < vectorValuesBT.length; i++) {
+            Node foundBT = btTree.find(btTree.root, vectorValuesBT[i]);
+            if (foundBT != null) {
+                System.out.println("Node found " + vectorValuesBT[i] + " at " + foundBT);
             } else {
-                paddingBuilder.append("   ");
+                System.out.println("Node not found");
             }
-
-            String paddingForBoth = paddingBuilder.toString();
-            String pointerRight = "└─R─";
-            String pointerLeft = (node.right != null) ? "├─L─" : "└─L─";
-
-            traverseNodes(sb, paddingForBoth, pointerLeft, node.left, node.right != null);
-            traverseNodes(sb, paddingForBoth, pointerRight, node.right, false);
-        }
-    }
-
-    //IMPRESSÃO C/IDENTIFICAÇÃO DE CORES
-    public static String traversePreOrderVP(Node root) {
-
-        if (root == null) {
-            return "";
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(root.key);
 
-        String pointerRight = "└─R─";
-        String pointerLeft = (root.right != null) ? "├─L─" : "└─L─";
+        //-----------------------------TESTE BTS
 
-        traverseNodes(sb, "", pointerLeft, root.left, root.right != null);
-        traverseNodes(sb, "", pointerRight, root.right, false);
+        //Adicionar nós na árvore
+        BTS btsTree = new BTS();
+        double inicio = System.nanoTime();
 
-        return sb.toString();
-    }
+        for (int value : conjA) {
+            btsTree.add(value, btsTree.root);
+        }
 
-    public static void traverseNodesVP(StringBuilder sb, String padding, String pointer, Node node, boolean hasRightSibling) {
-        if (node != null) {
-            sb.append("\n");
-            sb.append(padding);
-            sb.append(pointer);
-            sb.append(node.key);
+        double fim = System.nanoTime();
+        double duration = fim - inicio;
 
-            StringBuilder paddingBuilder = new StringBuilder(padding);
-            if (hasRightSibling) {
-                paddingBuilder.append("│  ");
+
+        //Imprimir árvore e tempo de inserção
+        System.out.println("Árvore BTS Impressa:");
+        //btsTree.InOrder(btsTree.root);
+        System.out.println();
+        System.out.println(duration/1e9);
+
+
+        //Encontrar elementos na árvore
+        for (int i = 0; i < vectorValuesBTS.length; i++) {
+            Node foundBTS = btsTree.find(btsTree.root, vectorValuesBTS[i]);
+            if (foundBTS != null) {
+                System.out.println("Node found " + vectorValuesBTS[i] + " at " + foundBTS);
             } else {
-                paddingBuilder.append("   ");
+                System.out.println("Node not found");
             }
-
-            String paddingForBoth = paddingBuilder.toString();
-            String pointerRight = "└─R─";
-            String pointerLeft = (node.right != null) ? "├─L─" : "└─L─";
-
-            traverseNodes(sb, paddingForBoth, pointerLeft, node.left, node.right != null);
-            traverseNodes(sb, paddingForBoth, pointerRight, node.right, false);
         }
+
+
+        //-----------------------------TESTE AVL
+
+        //Adicionar nós na árvore
+        AVL avlTree = new AVL();
+        double inicio = System.nanoTime();
+
+        for (int value : conjD) {
+            avlTree.root = avlTree.add(value, avlTree.root);
+        }
+
+        double fim = System.nanoTime();
+        double duration = fim - inicio;
+
+
+
+        //Imprimir árvore, tempo de inserção e nº de rotações
+        System.out.println("Árvore AVL Impressa:");
+        //avlTree.InOrder(avlTree.root);
+        System.out.println();
+        System.out.println(duration/1e9);
+
+
+        int conta = avlTree.getCount();
+        System.out.println("Contagem de rotações: " + conta);
+        System.out.println();
+
+
+        //Encontrar elementos na árvore
+        for (int i = 0; i < vectorValuesAVL.length; i++) {
+            Node foundAVL = avlTree.find(avlTree.root, vectorValuesAVL[i]);
+            if (foundAVL != null) {
+                System.out.println("Node found " + vectorValuesAVL[i] + " at " + foundAVL);
+            } else {
+                System.out.println("Node not found");
+            }
+        }
+
+
+
+        //-----------------------------TESTE VP
+
+        //Adicionar nós na árvore
+        VP vpTree = new VP();
+        double inicio = System.nanoTime();
+
+        for (int value : conjB) {
+            vpTree.add(value);
+        }
+
+
+        double fim = System.nanoTime();
+        double duration = fim - inicio;
+
+
+        //Imprimir árvore, tempo de inserção e nº de rotações
+        System.out.println("Árvore VP Impressa:");
+        //vpTree.InOrder(vpTree.root);
+        System.out.println();
+        System.out.println(duration/1e9);
+
+        int conta = vpTree.getCount();
+        System.out.println("Contagem de rotações: " + conta);
+        System.out.println();
+
+
+       //Encontrar elementos na árvore
+        for (int i = 0; i < vectorValuesVP.length; i++) {
+            Node foundVP = vpTree.find(vpTree.root, vectorValuesVP[i]);
+            if (foundVP != null) {
+                System.out.println("Node found " + vectorValuesVP[i] + " at " + foundVP);
+            } else {
+                System.out.println("Node not found");
+            }
+        }
+
+         */
+
     }
 
-    //GERAR CONJUNTOS DE TESTE
-    public static ArrayList<Integer> geraConjunto(int opcao, int tamanho, int limite) {
-        ArrayList<Integer> conjunto = new ArrayList<>();
-        Random r = new Random();
 
-        if (opcao == 1) {
-            while (conjunto.size() < tamanho) {
-                int valor = r.nextInt(limite);
-                if (!conjunto.contains(valor)) {
-                    conjunto.add(valor);
-                }
+
+    //GERAR CONJUNTOS SOLICITADOS
+    public static ArrayList<Integer> gera(int comp, int tam) {
+        Random random = new Random();
+        ArrayList<Integer> chavesUnicas = new ArrayList<>();
+        for (int i = 1; i <= comp * 2; i++) {
+            if (!chavesUnicas.contains(i)) {
+                chavesUnicas.add(i);
             }
-            Collections.sort(conjunto);
-        } else if (opcao == 2) {
-            while (conjunto.size() < tamanho) {
-                int valor = r.nextInt(limite);
-                if (!conjunto.contains(valor)) {
-                    conjunto.add(valor);
-                }
-            }
-            Collections.sort(conjunto, Collections.reverseOrder());
-        } else if (opcao == 3) {
-            while (conjunto.size() < tamanho) {
-                int valor = r.nextInt(limite);
-                if (!conjunto.contains(valor)) {
-                    conjunto.add(valor);
-                }
-            }
-            Collections.shuffle(conjunto);
-        } else if (opcao == 4) {
-            while (conjunto.size() < tamanho) {
-                int valor = r.nextInt(limite);
-                if (r.nextInt(limite) < limite-1 && conjunto.contains(valor)) {
-                    // 90% de chance de repetir
-                    conjunto.add(valor);
-                } else if (!conjunto.contains(valor)) {
-                    // 10% de chance de adicionar um novo valor
-                    conjunto.add(valor);
-                }
-            }
-            Collections.shuffle(conjunto);
         }
-        return conjunto;
+
+        ArrayList<Integer> chavesRepetidas = new ArrayList<>();
+        for (int i = 0; i < tam; i++) {
+            int randomIndex = random.nextInt(chavesUnicas.size());
+            chavesRepetidas.add(chavesUnicas.get(randomIndex));
+        }
+
+        ArrayList<Integer> finalList = new ArrayList<>();
+        finalList.addAll(chavesUnicas);
+        finalList.addAll(chavesRepetidas);
+        Collections.shuffle(finalList);
+
+        return finalList;
     }
 
-
+    public static ArrayList<Integer> gerar(int comp, double paraMin, double paraMax) {
+        Random random = new Random();
+        int tam = random.nextInt((int) (comp * paraMax - comp * paraMin + 1)) + (int) (comp * paraMin);
+        return gera(comp, tam);
+    }
 }
